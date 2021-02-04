@@ -282,10 +282,10 @@ async function getCategoryData(cids, uid, selectedCid, states, privilege) {
 }
 
 helpers.getVisibleCategories = async function (params) {
-	const cids = params.cids;
-	const uid = params.uid;
+	const { cids } = params;
+	const { uid } = params;
 	const states = params.states || [categories.watchStates.watching, categories.watchStates.notwatching];
-	const privilege = params.privilege;
+	const { privilege } = params;
 	const showLinks = !!params.showLinks;
 
 	let [allowed, watchState, categoriesData, isAdmin, isModerator] = await Promise.all([
@@ -317,7 +317,12 @@ helpers.getVisibleCategories = async function (params) {
 			return false;
 		}
 		const hasVisibleChildren = checkVisibleChildren(c, cidToAllowed, cidToWatchState, states);
-		const isCategoryVisible = cidToAllowed[c.cid] && (showLinks || !c.link) && !c.disabled && states.includes(cidToWatchState[c.cid]);
+		const isCategoryVisible = (
+			cidToAllowed[c.cid] &&
+			(showLinks || !c.link) &&
+			!c.disabled &&
+			states.includes(cidToWatchState[c.cid])
+		);
 		const shouldBeRemoved = !hasVisibleChildren && !isCategoryVisible;
 		const shouldBeDisaplayedAsDisabled = hasVisibleChildren && !isCategoryVisible;
 
@@ -382,7 +387,8 @@ function checkVisibleChildren(c, cidToAllowed, cidToWatchState, states) {
 		return false;
 	}
 	return c.children.some(c => !c.disabled && (
-		(cidToAllowed[c.cid] && states.includes(cidToWatchState[c.cid])) || checkVisibleChildren(c, cidToAllowed, cidToWatchState, states)
+		(cidToAllowed[c.cid] && states.includes(cidToWatchState[c.cid])) ||
+		checkVisibleChildren(c, cidToAllowed, cidToWatchState, states)
 	));
 }
 
