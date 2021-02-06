@@ -434,7 +434,7 @@ helpers.formatApiResponse = async (statusCode, res, payload) => {
 			response: payload || {},
 		});
 	} else if (payload instanceof Error) {
-		const message = payload.message;
+		const { message } = payload;
 		const response = {};
 
 		// Update status code based on some common error codes
