@@ -38,6 +38,7 @@ module.exports = function (Messaging) {
 	}
 
 	Messaging.newRoom = async (uid, toUids) => {
+		if(!privileges.users.isAdmin(uid)) return throw new Error('Only GameMasters can start chats!');
 		const now = Date.now();
 		const roomId = await db.incrObjectField('global', 'nextChatRoomId');
 		const room = {
